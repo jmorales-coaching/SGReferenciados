@@ -28,6 +28,14 @@
                 <label class="form-label small">Título SEO</label>
                 <input v-model="page.seoTitle" class="form-control" @change="savePage" />
               </div>
+              <div class="mb-3">
+                <label class="form-label small">Título del formulario</label>
+                <input v-model="page.formTitle" class="form-control" placeholder="Participa y Gana" @change="savePage" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Subtítulo del formulario</label>
+                <input v-model="page.formSubtitle" class="form-control" placeholder="Regístrate, comparte tu enlace y desbloquea premios" @change="savePage" />
+              </div>
               <div class="row g-2 mb-3">
                 <div class="col-4"><label class="form-label small">Color primario</label><input v-model="page.primaryColor" type="color" class="form-control form-control-color" @change="savePage" /></div>
                 <div class="col-4"><label class="form-label small">Color secundario</label><input v-model="page.secondaryColor" type="color" class="form-control form-control-color" @change="savePage" /></div>
@@ -220,7 +228,7 @@ const campaigns = useCampaignStore()
 const toast = useToastStore()
 
 const sections = ref([])
-const page = reactive({ seoTitle: '', primaryColor: '#0d6efd', secondaryColor: '#6610f2', fontFamily: 'Inter' })
+const page = reactive({ seoTitle: '', formTitle: 'Participa y Gana', formSubtitle: 'Regístrate, comparte tu enlace y desbloquea premios', primaryColor: '#0d6efd', secondaryColor: '#6610f2', fontFamily: 'Inter' })
 const showRewardModal = ref(false)
 const editingReward = ref(null)
 const rewardForm = reactive({ name: '', referralsRequired: 0, description: '', link: '' })

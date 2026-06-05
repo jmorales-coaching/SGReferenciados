@@ -11,6 +11,8 @@ const LandingPage = sequelize.define('LandingPage', {
   primaryColor: { type: DataTypes.STRING(7), defaultValue: '#0d6efd' },
   secondaryColor: { type: DataTypes.STRING(7), defaultValue: '#6610f2' },
   fontFamily: { type: DataTypes.STRING(100), defaultValue: 'Inter' },
+  formTitle: { type: DataTypes.STRING(200), defaultValue: 'Participa y Gana' },
+  formSubtitle: { type: DataTypes.STRING(300), defaultValue: 'Regístrate, comparte tu enlace y desbloquea premios' },
   publishedAt: { type: DataTypes.DATE, allowNull: true },
 }, {
   tableName: 'landing_pages',
