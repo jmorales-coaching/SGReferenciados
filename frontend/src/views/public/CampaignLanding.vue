@@ -31,8 +31,8 @@
                     <div class="icon-circle mx-auto mb-3 d-flex align-items-center justify-content-center" :style="{ background: `linear-gradient(135deg, ${campaign.landingPage.primaryColor}, ${campaign.landingPage.secondaryColor})` }">
                       <i class="bi bi-person-plus-fill fs-3 text-white"></i>
                     </div>
-                    <h5 class="fw-bold">Participa y Gana</h5>
-                    <p class="text-muted small">Regístrate, comparte tu enlace y desbloquea premios</p>
+                    <h5 class="fw-bold">{{ config.landing_title || 'Participa y Gana' }}</h5>
+                    <p class="text-muted small">{{ config.landing_subtitle || 'Regístrate, comparte tu enlace y desbloquea premios' }}</p>
                   </div>
                   <form @submit.prevent="handleRegister">
                     <div class="mb-3">
@@ -137,12 +137,13 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { publicApi } from '../../services/api'
+import { publicApi, configApi } from '../../services/api'
 
 const route = useRoute()
 const router = useRouter()
 const campaign = ref(null)
 const sections = ref([])
+const config = ref({})
 const loading = ref(true)
 const error = ref(null)
 const submitting = ref(false)
@@ -157,7 +158,7 @@ const faqSection = computed(() => sections.value.find((s) => s.type === 'faq'))
 const customSections = computed(() => sections.value.filter((s) => !['hero', 'benefits', 'testimonials', 'faq'].includes(s.type)))
 
 const heroTitle = computed(() => heroSection.value?.title || campaign.value?.name || 'Consigue Acceso Exclusivo')
-const heroText = computed(() => heroSection.value?.content?.text || 'Regístrate, comparte tu enlace y desbloquea premios exclusivos.')
+const heroText = computed(() => heroSection.value?.content?.text || config.value.landing_subtitle || 'Regístrate, comparte tu enlace y desbloquea premios exclusivos.')
 
 const sectionStyle = (sec) => {
   const bg = sec?.content || {}
@@ -183,9 +184,13 @@ const youtubeEmbedUrl = (url) => {
 
 onMounted(async () => {
   try {
-    const res = await publicApi.getCampaign(route.params.slug)
-    campaign.value = res.data.data || res.data
+    const [campaignRes, configRes] = await Promise.all([
+      publicApi.getCampaign(route.params.slug),
+      configApi.get().catch(() => ({ data: {} })),
+    ])
+    campaign.value = campaignRes.data.data || campaignRes.data
     sections.value = campaign.value?.landingPage?.sections || []
+    config.value = configRes.data || {}
   } catch {
     error.value = true
   } finally {

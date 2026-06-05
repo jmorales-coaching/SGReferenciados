@@ -10,6 +10,8 @@ const migrate = async () => {
   // Seed default config
   await Config.upsert({ key: 'upgrade_text', value: 'Actualiza tu plan y obtén más beneficios' });
   await Config.upsert({ key: 'upgrade_link', value: '/#contacto' });
+  await Config.upsert({ key: 'landing_title', value: 'Participa y Gana' });
+  await Config.upsert({ key: 'landing_subtitle', value: 'Regístrate, comparte tu enlace y desbloquea premios' });
 
   // Seed default users (safe to re-run — email is not unique, so we use findOrCreate)
   const seedUser = async (data) => {
