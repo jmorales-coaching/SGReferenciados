@@ -122,7 +122,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import axios from 'axios'
+import { publicApi } from '../../services/api'
 
 const route = useRoute()
 const data = ref(null)
@@ -143,7 +143,7 @@ const whatsappUrl = computed(() => {
 
 onMounted(async () => {
   try {
-    const res = await axios.get(`/api/leads/${route.params.uuid}/progress`)
+    const res = await publicApi.getProgress(route.params.uuid)
     data.value = res.data.data || res.data
   } catch {
     error.value = true

@@ -137,7 +137,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import axios from 'axios'
+import { publicApi } from '../../services/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -183,7 +183,7 @@ const youtubeEmbedUrl = (url) => {
 
 onMounted(async () => {
   try {
-    const res = await axios.get(`/api/c/${route.params.slug}`)
+    const res = await publicApi.getCampaign(route.params.slug)
     campaign.value = res.data.data || res.data
     sections.value = campaign.value?.landingPage?.sections || []
   } catch {
@@ -206,7 +206,7 @@ const handleRegister = async () => {
       campaignSlug: route.params.slug,
     }
     if (refCode) payload.ref = refCode
-    const res = await axios.post('/api/leads/register', payload)
+    const res = await publicApi.registerLead(payload)
     const data = res.data.data || res.data
     registerSuccess.value = '¡Registro exitoso! Redirigiendo...'
     setTimeout(() => router.push(`/referral/${data.uuid}`), 1200)

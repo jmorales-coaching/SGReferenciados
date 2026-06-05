@@ -1,7 +1,10 @@
 import axios from 'axios'
 
+const BASE = import.meta.env.VITE_API_URL || '/api'
+
+// Authenticated API instance
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: BASE,
   headers: { 'Content-Type': 'application/json' },
   timeout: 15000,
 })
@@ -25,6 +28,13 @@ api.interceptors.response.use(
     return Promise.reject({ message, errors, status: error.response?.status })
   }
 )
+
+// Public API instance (no auth, no unwrap — raw axios response)
+export const publicAxios = axios.create({
+  baseURL: BASE,
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 15000,
+})
 
 export const authApi = {
   register(data) { return api.post('/auth/register', data) },
@@ -89,7 +99,9 @@ export const adminApi = {
 }
 
 export const publicApi = {
-  getCampaign(slug) { return api.get(`/c/${slug}`) },
+  getCampaign(slug) { return publicAxios.get(`/c/${slug}`) },
+  registerLead(data) { return publicAxios.post('/leads/register', data) },
+  getProgress(uuid) { return publicAxios.get(`/leads/${uuid}/progress`) },
 }
 
 export const configApi = {
