@@ -1,26 +1,27 @@
 const { Sequelize } = require('sequelize');
 const env = require('./environment');
 
-const sequelize = new Sequelize(env.db.name, env.db.user, env.db.password, {
-  host: env.db.host,
-  port: env.db.port,
-  dialect: 'postgres',
-  dialectOptions: {
-    ssl: env.nodeEnv === 'production' ? { rejectUnauthorized: false } : false,
-  },
-  logging: env.nodeEnv === 'development' ? false : false,
-  pool: {
-    max: 10,
-    min: 0,
-    acquire: 30000,
-    idle: 10000,
-  },
-  define: {
-    timestamps: true,
-    underscored: true,
-    underscoredAll: true,
-  },
-});
+const sequelize = process.env.DATABASE_URL
+  ? new Sequelize(process.env.DATABASE_URL, {
+      dialect: 'postgres',
+      dialectOptions: {
+        ssl: env.nodeEnv === 'production' ? { rejectUnauthorized: false } : false,
+      },
+      logging: false,
+      pool: { max: 10, min: 0, acquire: 30000, idle: 10000 },
+      define: { timestamps: true, underscored: true, underscoredAll: true },
+    })
+  : new Sequelize(env.db.name, env.db.user, env.db.password, {
+      host: env.db.host,
+      port: env.db.port,
+      dialect: 'postgres',
+      dialectOptions: {
+        ssl: env.nodeEnv === 'production' ? { rejectUnauthorized: false } : false,
+      },
+      logging: false,
+      pool: { max: 10, min: 0, acquire: 30000, idle: 10000 },
+      define: { timestamps: true, underscored: true, underscoredAll: true },
+    });
 
 const testConnection = async () => {
   try {
