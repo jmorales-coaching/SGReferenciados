@@ -219,9 +219,8 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCampaignStore } from '../../stores/campaigns'
 import { useToastStore } from '../../stores/toast'
-import { campaignApi, landingApi, rewardApi } from '../../services/api'
+import { campaignApi, landingApi, rewardApi, uploadApi } from '../../services/api'
 import RichTextEditor from '../../components/RichTextEditor.vue'
-import axios from 'axios'
 
 const route = useRoute()
 const campaigns = useCampaignStore()
@@ -314,12 +313,10 @@ const handleImageUpload = async (event, i) => {
   const file = event.target.files[0]
   if (!file) return
   try {
-    const fd = new FormData(); fd.append('file', file)
-    const res = await axios.post('/api/uploads', fd, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' },
-    })
-    const data = res.data?.data || res.data
-    sections.value[i].content.imageUrl = `/uploads/${data.filename}`
+    const data = await uploadApi.upload(file)
+    const filename = data.data?.filename || data.filename
+    const base = (import.meta.env.VITE_API_URL || '').replace(/\/api$/, '')
+    sections.value[i].content.imageUrl = `${base}/uploads/${filename}`
     await saveSection(sections.value[i])
     toast.add('Imagen subida', 'success')
   } catch { toast.add('Error al subir imagen', 'danger') }
@@ -332,12 +329,10 @@ const handleBgUpload = async (event, i) => {
   const file = event.target.files[0]
   if (!file) return
   try {
-    const fd = new FormData(); fd.append('file', file)
-    const res = await axios.post('/api/uploads', fd, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' },
-    })
-    const data = res.data?.data || res.data
-    sections.value[i].content.bgImage = `/uploads/${data.filename}`
+    const data = await uploadApi.upload(file)
+    const filename = data.data?.filename || data.filename
+    const base = (import.meta.env.VITE_API_URL || '').replace(/\/api$/, '')
+    sections.value[i].content.bgImage = `${base}/uploads/${filename}`
     await saveSection(sections.value[i])
     toast.add('Fondo subido', 'success')
   } catch { toast.add('Error al subir fondo', 'danger') }
