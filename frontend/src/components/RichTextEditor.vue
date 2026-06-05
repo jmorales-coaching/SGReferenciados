@@ -143,7 +143,7 @@ import Youtube from '@tiptap/extension-youtube'
 import TextAlign from '@tiptap/extension-text-align'
 import Color from '@tiptap/extension-color'
 import { TextStyle, FontSize } from '@tiptap/extension-text-style'
-import axios from 'axios'
+import { uploadApi } from '../services/api'
 
 const props = defineProps({
   modelValue: { type: String, default: '' },
@@ -217,16 +217,10 @@ const handleImageUpload = async (event) => {
   const file = event.target.files[0]
   if (!file) return
   try {
-    const fd = new FormData()
-    fd.append('file', file)
-    const res = await axios.post('/api/uploads', fd, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-    const data = res.data?.data || res.data
-    editor.value?.chain().focus().setImage({ src: `/uploads/${data.filename}` }).run()
+    const data = await uploadApi.upload(file)
+    const filename = data.data?.filename || data.filename
+    const base = (import.meta.env.VITE_API_URL || '').replace(/\/api$/, '')
+    editor.value?.chain().focus().setImage({ src: `${base}/uploads/${filename}` }).run()
   } catch (e) {
     console.error('Upload error:', e)
   }
