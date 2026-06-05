@@ -23,7 +23,11 @@ app.set('trust proxy', 1);
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({
-  origin: env.app.url,
+  origin: (origin, cb) => {
+    if (!origin) return cb(null, true);
+    if (env.app.corsOrigins.includes(origin)) return cb(null, true);
+    cb(null, false);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],

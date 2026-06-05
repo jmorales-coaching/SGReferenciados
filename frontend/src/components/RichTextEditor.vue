@@ -182,7 +182,7 @@ const updateImageState = (editor) => {
 const editor = useEditor({
   content: props.modelValue,
   extensions: [
-    StarterKit.configure({ heading: { levels: [2, 3] } }),
+    StarterKit.configure({ heading: { levels: [2, 3] }, link: false }),
     CustomImage.configure({ resize: { enabled: true } }),
     Link.configure({ openOnClick: false }),
     Placeholder.configure({ placeholder: props.placeholder }),

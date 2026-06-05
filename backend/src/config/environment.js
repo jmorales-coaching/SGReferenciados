@@ -13,6 +13,7 @@ module.exports = {
   app: {
     url: process.env.APP_URL || 'http://localhost:5173',
     apiUrl: process.env.API_URL || 'http://localhost:4000/api',
+    corsOrigins: (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',').map(s => s.trim()),
   },
   jwt: {
     secret: process.env.JWT_SECRET || 'fallback-secret',
