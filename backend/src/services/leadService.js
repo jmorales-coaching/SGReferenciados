@@ -10,7 +10,7 @@ class LeadService {
     if (!campaign) throw Object.assign(new Error('Campaign not found or inactive'), { statusCode: 404 });
 
     const existing = await User.findOne({ where: { email: data.email, campaignId: campaign.id } });
-    if (existing) throw Object.assign(new Error('Email already registered for this campaign'), { statusCode: 409 });
+    if (existing) throw Object.assign(new Error(`Email already registered for campaign "${campaign.name}" (ID: ${campaign.id})`), { statusCode: 409 });
 
     // Determine who gets the referral credit: ?ref code > campaign owner
     let referrerCode = null;

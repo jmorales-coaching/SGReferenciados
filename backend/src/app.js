@@ -19,6 +19,8 @@ const configRoutes = require('./routes/configRoutes');
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({
   origin: env.app.url,
