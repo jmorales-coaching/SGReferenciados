@@ -116,7 +116,7 @@
               <h2 v-if="sec.title" class="fw-bold mb-4">{{ sec.title }}</h2>
               <div v-if="sec.content.text" v-html="sec.content.text" class="text-muted mb-4 rich-content"></div>
               <div v-if="sec.content.imageUrl" class="mb-4">
-                <img :src="absUrl(sec.content.imageUrl)" class="img-fluid rounded-3 shadow-sm" alt="" />
+                <img :src="sec.content.imageUrl" class="img-fluid rounded-3 shadow-sm" alt="" />
               </div>
               <div v-if="sec.content.youtubeUrl">
                 <div class="ratio ratio-16x9">
