@@ -21,11 +21,8 @@ const getCampaignLanding = asyncHandler(async (req, res) => {
   const campaign = await campaignService.findBySlug(req.params.slug);
   if (!campaign) return ApiResponse.notFound(res, 'Campaign not found');
   const base = `${req.protocol}://${req.get('host')}`;
-  absUrls(campaign, base);
-  if (campaign.landingPage?.formIcon && campaign.landingPage.formIcon.startsWith('/')) {
-    campaign.landingPage.formIcon = `${base}${campaign.landingPage.formIcon}`;
-  }
-  return ApiResponse.success(res, campaign);
+  const data = absUrls(campaign.toJSON(), base);
+  return ApiResponse.success(res, data);
 });
 
 module.exports = { getCampaignLanding };
