@@ -13,6 +13,7 @@ const LandingPage = sequelize.define('LandingPage', {
   fontFamily: { type: DataTypes.STRING(100), defaultValue: 'Inter' },
   formTitle: { type: DataTypes.STRING(200), defaultValue: 'Participa y Gana' },
   formSubtitle: { type: DataTypes.STRING(300), defaultValue: 'Regístrate, comparte tu enlace y desbloquea premios' },
+  formIcon: { type: DataTypes.STRING(500), allowNull: true },
   publishedAt: { type: DataTypes.DATE, allowNull: true },
 }, {
   tableName: 'landing_pages',

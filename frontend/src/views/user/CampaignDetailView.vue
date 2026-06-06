@@ -36,6 +36,18 @@
                 <label class="form-label small">Subtítulo del formulario</label>
                 <input v-model="page.formSubtitle" class="form-control" placeholder="Regístrate, comparte tu enlace y desbloquea premios" @change="savePage" />
               </div>
+              <div class="mb-3">
+                <label class="form-label small">Ícono del formulario</label>
+                <div class="d-flex align-items-center gap-2">
+                  <div class="icon-circle d-flex align-items-center justify-content-center flex-shrink-0" :style="{ background: `linear-gradient(135deg, ${page.primaryColor}, ${page.secondaryColor})`, width: '48px', height: '48px', borderRadius: '50%' }">
+                    <img v-if="page.formIcon" :src="page.formIcon" style="width:28px;height:28px;border-radius:50%;object-fit:cover" />
+                    <i v-else class="bi bi-person-plus-fill text-white" style="font-size:1.25rem"></i>
+                  </div>
+                  <button class="btn btn-sm btn-outline-primary" @click="triggerFormIconUpload">Subir</button>
+                  <button v-if="page.formIcon" class="btn btn-sm btn-outline-danger" @click="page.formIcon = ''; savePage()">Quitar</button>
+                  <input type="file" ref="formIconInput" accept="image/*" class="d-none" @change="handleFormIconUpload" />
+                </div>
+              </div>
               <div class="row g-2 mb-3">
                 <div class="col-4"><label class="form-label small">Color primario</label><input v-model="page.primaryColor" type="color" class="form-control form-control-color" @change="savePage" /></div>
                 <div class="col-4"><label class="form-label small">Color secundario</label><input v-model="page.secondaryColor" type="color" class="form-control form-control-color" @change="savePage" /></div>
@@ -227,13 +239,14 @@ const campaigns = useCampaignStore()
 const toast = useToastStore()
 
 const sections = ref([])
-const page = reactive({ seoTitle: '', formTitle: 'Participa y Gana', formSubtitle: 'Regístrate, comparte tu enlace y desbloquea premios', primaryColor: '#0d6efd', secondaryColor: '#6610f2', fontFamily: 'Inter' })
+const page = reactive({ seoTitle: '', formTitle: 'Participa y Gana', formSubtitle: 'Regístrate, comparte tu enlace y desbloquea premios', formIcon: '', primaryColor: '#0d6efd', secondaryColor: '#6610f2', fontFamily: 'Inter' })
 const showRewardModal = ref(false)
 const editingReward = ref(null)
 const rewardForm = reactive({ name: '', referralsRequired: 0, description: '', link: '' })
 const showAddSection = ref(false)
 const fileInputs = ref({})
 const bgInputs = ref({})
+const formIconInput = ref(null)
 
 const sectionTypes = [
   { value: 'hero', label: 'Hero', icon: 'bi bi-house-door' },
@@ -336,6 +349,22 @@ const handleBgUpload = async (event, i) => {
     await saveSection(sections.value[i])
     toast.add('Fondo subido', 'success')
   } catch { toast.add('Error al subir fondo', 'danger') }
+  event.target.value = ''
+}
+
+const triggerFormIconUpload = () => formIconInput.value?.click()
+
+const handleFormIconUpload = async (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+  try {
+    const data = await uploadApi.upload(file)
+    const filename = data.data?.filename || data.filename
+    const base = (import.meta.env.VITE_API_URL || '').replace(/\/api$/, '')
+    page.formIcon = `${base}/uploads/${filename}`
+    await savePage()
+    toast.add('Ícono subido', 'success')
+  } catch { toast.add('Error al subir ícono', 'danger') }
   event.target.value = ''
 }
 

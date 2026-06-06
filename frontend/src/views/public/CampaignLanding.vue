@@ -29,7 +29,8 @@
                 <div class="card-body p-4 p-lg-5">
                   <div class="text-center mb-4">
                     <div class="icon-circle mx-auto mb-3 d-flex align-items-center justify-content-center" :style="{ background: `linear-gradient(135deg, ${campaign.landingPage.primaryColor}, ${campaign.landingPage.secondaryColor})` }">
-                      <i class="bi bi-person-plus-fill fs-3 text-white"></i>
+                      <img v-if="campaign.landingPage.formIcon" :src="absUrl(campaign.landingPage.formIcon)" class="rounded-circle" style="width:32px;height:32px;object-fit:cover" />
+                      <i v-else class="bi bi-person-plus-fill fs-3 text-white"></i>
                     </div>
                     <h5 class="fw-bold">{{ campaign?.landingPage?.formTitle || 'Participa y Gana' }}</h5>
                     <p class="text-muted small">{{ campaign?.landingPage?.formSubtitle || 'Regístrate, comparte tu enlace y desbloquea premios' }}</p>
