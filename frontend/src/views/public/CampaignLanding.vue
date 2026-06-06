@@ -13,10 +13,10 @@
           <div class="row align-items-center g-5">
             <div class="col-lg-6">
               <h1 class="display-4 fw-bold mb-3" :style="{ color: campaign.landingPage.primaryColor }">{{ heroTitle }}</h1>
-              <div v-if="heroSection?.content?.text" v-html="richHtml(heroSection.content.text)" class="lead text-muted mb-4 rich-content"></div>
+              <div v-if="heroSection?.content?.text" v-html="heroSection.content.text" class="lead text-muted mb-4 rich-content"></div>
               <p v-else class="lead text-muted mb-4">{{ heroText }}</p>
               <div v-if="heroSection?.content?.imageUrl" class="mb-3">
-                <img :src="absUrl(heroSection.content.imageUrl)" class="img-fluid rounded-3 shadow-sm" alt="" style="max-height:300px" />
+                <img :src="heroSection.content.imageUrl" class="img-fluid rounded-3 shadow-sm" alt="" style="max-height:300px" />
               </div>
               <div v-if="heroSection?.content?.youtubeUrl">
                 <div class="ratio ratio-16x9">
@@ -29,7 +29,7 @@
                 <div class="card-body p-4 p-lg-5">
                   <div class="text-center mb-4">
                     <div class="icon-circle mx-auto mb-3 d-flex align-items-center justify-content-center" :style="{ background: `linear-gradient(135deg, ${campaign.landingPage.primaryColor}, ${campaign.landingPage.secondaryColor})` }">
-                      <img v-if="campaign.landingPage.formIcon" :src="absUrl(campaign.landingPage.formIcon)" class="rounded-circle" style="width:32px;height:32px;object-fit:cover" />
+                      <img v-if="campaign.landingPage.formIcon" :src="campaign.landingPage.formIcon" class="rounded-circle" style="width:32px;height:32px;object-fit:cover" />
                       <i v-else class="bi bi-person-plus-fill fs-3 text-white"></i>
                     </div>
                     <h5 class="fw-bold">{{ campaign?.landingPage?.formTitle || 'Participa y Gana' }}</h5>
@@ -80,7 +80,7 @@
           <div class="row g-4">
             <div v-for="(item, i) in testimonialsSection.content.items" :key="i" class="col-md-6">
               <div class="card border-0 shadow-sm h-100 p-4">
-                <div class="mb-3"><i class="bi bi-quote fs-4 text-muted"></i> <span v-html="richHtml(item.text)"></span></div>
+                <div class="mb-3"><i class="bi bi-quote fs-4 text-muted"></i> <span v-html="item.text"></span></div>
                 <div class="d-flex align-items-center">
                   <div class="rounded-circle text-white d-flex align-items-center justify-content-center me-2 fw-bold" style="width:40px;height:40px" :style="{ background: campaign.landingPage.primaryColor }">{{ item.name?.charAt(0) }}</div>
                   <div><div class="fw-semibold small">{{ item.name }}</div><small class="text-muted">{{ item.role }}</small></div>
@@ -100,7 +100,7 @@
                 <div class="card border-0 shadow-sm">
                   <div class="card-body">
                     <h6 class="fw-bold">{{ item.question }}</h6>
-                    <div class="small text-muted mb-0" v-html="richHtml(item.answer)"></div>
+                    <div class="small text-muted mb-0" v-html="item.answer"></div>
                   </div>
                 </div>
               </div>
@@ -114,7 +114,7 @@
           <div class="row justify-content-center">
             <div class="col-lg-8 text-center">
               <h2 v-if="sec.title" class="fw-bold mb-4">{{ sec.title }}</h2>
-              <div v-if="sec.content.text" v-html="richHtml(sec.content.text)" class="text-muted mb-4 rich-content"></div>
+              <div v-if="sec.content.text" v-html="sec.content.text" class="text-muted mb-4 rich-content"></div>
               <div v-if="sec.content.imageUrl" class="mb-4">
                 <img :src="absUrl(sec.content.imageUrl)" class="img-fluid rounded-3 shadow-sm" alt="" />
               </div>
@@ -164,14 +164,10 @@ const sectionStyle = (sec) => {
   const bg = sec?.content || {}
   const styles = {}
   if (bg.bgColor) styles.backgroundColor = bg.bgColor
-  if (bg.bgImage) { styles.backgroundImage = `url(${absUrl(bg.bgImage)})`; styles.backgroundSize = 'cover'; styles.backgroundPosition = 'center'; styles.backgroundRepeat = 'no-repeat' }
+  if (bg.bgImage) { styles.backgroundImage = `url(${bg.bgImage})`; styles.backgroundSize = 'cover'; styles.backgroundPosition = 'center'; styles.backgroundRepeat = 'no-repeat' }
   if (bg.textColor) styles.color = bg.textColor
   return styles
 }
-
-const uploadsBase = (import.meta.env.VITE_API_URL || '').replace(/\/api$/, '')
-const absUrl = (url) => url?.startsWith('/') ? `${uploadsBase}${url}` : (url || '')
-const richHtml = (html) => html?.replace(/<img\s+src="(\/[^"]+)"/g, `<img src="${uploadsBase}$1"`)
 
 const heroStyle = computed(() => {
   const gradient = `linear-gradient(135deg, ${campaign.value?.landingPage?.primaryColor}08, ${campaign.value?.landingPage?.secondaryColor}15)`
