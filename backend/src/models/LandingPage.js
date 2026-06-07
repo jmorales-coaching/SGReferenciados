@@ -16,6 +16,8 @@ const LandingPage = sequelize.define('LandingPage', {
   formIcon: { type: DataTypes.STRING(500), allowNull: true },
   formTitleSize: { type: DataTypes.STRING(10), defaultValue: '' },
   formSubtitleSize: { type: DataTypes.STRING(10), defaultValue: '' },
+  emailSubject: { type: DataTypes.STRING(300), defaultValue: '' },
+  emailBody: { type: DataTypes.TEXT, defaultValue: '' },
   publishedAt: { type: DataTypes.DATE, allowNull: true },
 }, {
   tableName: 'landing_pages',

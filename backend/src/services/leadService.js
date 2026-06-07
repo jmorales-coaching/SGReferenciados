@@ -1,11 +1,16 @@
-const { User, Campaign, Reward, RewardFile } = require('../models/associations');
+const { User, Campaign, Reward, RewardFile, LandingPage } = require('../models/associations');
 const { generateReferralCode } = require('../utils/referralCode');
+const emailService = require('./emailService');
+const env = require('../config/environment');
 
 class LeadService {
   async register(data) {
     const campaign = await Campaign.findOne({
       where: { slug: data.campaignSlug, status: 'active' },
-      include: [{ association: 'owner', attributes: ['id', 'referralCode'] }],
+      include: [
+        { association: 'owner', attributes: ['id', 'fullName', 'company', 'referralCode'] },
+        { association: 'landingPage', attributes: ['emailSubject', 'emailBody'] },
+      ],
     });
     if (!campaign) throw Object.assign(new Error('Campaign not found or inactive'), { statusCode: 404 });
 
@@ -39,6 +44,10 @@ class LeadService {
       referredBy: referrerCode,
       campaignId: campaign.id,
     });
+
+    // Send welcome email asynchronously (don't block response)
+    const baseUrl = env.app.url;
+    emailService.sendWelcomeEmail({ lead, campaign, owner: campaign.owner, landingPage: campaign.landingPage, baseUrl });
 
     return {
       uuid: lead.uuid,

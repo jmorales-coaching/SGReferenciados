@@ -165,6 +165,29 @@
             </div>
           </div>
 
+          <div class="card border-0 shadow-sm rounded-3 mb-3">
+            <div class="card-body p-4">
+              <h6 class="fw-bold mb-3"><i class="bi bi-envelope me-2 text-primary"></i>Email de bienvenida</h6>
+              <div class="mb-3">
+                <label class="form-label small">Asunto</label>
+                <input v-model="page.emailSubject" class="form-control" placeholder="🎁 ¡{NOMBRE} ya puedes descargar tu PDF!" @change="savePage" />
+              </div>
+              <div class="mb-2">
+                <label class="form-label small">Cuerpo</label>
+                <textarea v-model="page.emailBody" class="form-control" rows="10" placeholder="Escribe el cuerpo del email..." @change="savePage"></textarea>
+              </div>
+              <div>
+                <small class="text-muted d-block">Variables disponibles:</small>
+                <div class="d-flex flex-wrap gap-2 mt-1">
+                  <span class="badge bg-light text-dark border">{NOMBRE}</span>
+                  <span class="badge bg-light text-dark border">{ENLACE_REFERIDO}</span>
+                  <span class="badge bg-light text-dark border">{ENLACE_PANEL}</span>
+                  <span class="badge bg-light text-dark border">{CREADOR}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Add Section Modal -->
           <div v-if="showAddSection" class="modal-backdrop" @click.self="showAddSection = false">
             <div class="modal-card p-4">
@@ -253,7 +276,7 @@ const campaigns = useCampaignStore()
 const toast = useToastStore()
 
 const sections = ref([])
-const page = reactive({ seoTitle: '', formTitle: 'Participa y Gana', formSubtitle: 'Regístrate, comparte tu enlace y desbloquea premios', formTitleSize: '', formSubtitleSize: '', formIcon: '', primaryColor: '#0d6efd', secondaryColor: '#6610f2', fontFamily: 'Inter' })
+const page = reactive({ seoTitle: '', formTitle: 'Participa y Gana', formSubtitle: 'Regístrate, comparte tu enlace y desbloquea premios', formTitleSize: '', formSubtitleSize: '', formIcon: '', emailSubject: '', emailBody: '', primaryColor: '#0d6efd', secondaryColor: '#6610f2', fontFamily: 'Inter' })
 const showRewardModal = ref(false)
 const editingReward = ref(null)
 const rewardForm = reactive({ name: '', referralsRequired: 0, description: '', link: '' })

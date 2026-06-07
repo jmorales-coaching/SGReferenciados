@@ -32,4 +32,7 @@ module.exports = {
     apiKey: process.env.CLOUDINARY_API_KEY,
     apiSecret: process.env.CLOUDINARY_API_SECRET,
   },
+  resend: {
+    apiKey: process.env.RESEND_API_KEY,
+  },
 };
