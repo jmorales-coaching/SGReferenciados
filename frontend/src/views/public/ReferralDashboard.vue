@@ -11,29 +11,58 @@
 
       <template v-else-if="data">
         <div class="row justify-content-center mb-4">
-          <div class="col-lg-8 text-center">
-              <div class="card border-0 shadow-sm rounded-4 p-4 p-lg-5">
-              <div class="success-icon mx-auto mb-3 d-flex align-items-center justify-content-center" style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#198754,#20c997)">
-                <i class="bi bi-check2-circle text-white fs-2"></i>
+          <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-lg-5">
+              <div class="text-center">
+                <div class="success-icon mx-auto mb-3 d-flex align-items-center justify-content-center" style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#198754,#20c997)">
+                  <i class="bi bi-check2-circle text-white fs-2"></i>
+                </div>
+                <h3 class="fw-bold mb-2">¡Bienvenido, {{ data.fullName }}!</h3>
+                <hr />
               </div>
-              <h3 class="fw-bold mb-2">¡Bienvenido, {{ data.fullName }}!</h3>
-              <p class="text-muted mb-1">Tu código de referido:</p>
-              <h4 class="fw-bold text-primary">{{ data.referralCode }}</h4>
-              <hr />
-              <div class="text-start">
-                <p class="small fw-semibold mb-1"><i class="bi bi-box-arrow-in-right me-1"></i>Tu enlace personal al panel:</p>
-                <div class="input-group input-group-sm mb-3">
-                  <input :value="panelLink" class="form-control" readonly id="panelLink" />
-                  <button class="btn btn-outline-primary" @click="copyPanelLink"><i class="bi bi-clipboard"></i></button>
+              <p class="small fw-semibold mb-1"><i class="bi bi-box-arrow-in-right me-1"></i>Tu enlace personal al panel:</p>
+              <div class="input-group input-group-sm mb-3">
+                <input :value="panelLink" class="form-control" readonly id="panelLink" />
+                <button class="btn btn-outline-primary" @click="copyPanelLink"><i class="bi bi-clipboard"></i></button>
+              </div>
+              <p class="small fw-semibold mb-1"><i class="bi bi-share-fill me-1"></i>Comparte tu enlace de referido:</p>
+              <div class="input-group mb-2">
+                <input :value="referralLink" class="form-control" readonly id="refLink" />
+                <button class="btn btn-outline-primary" @click="copyLink"><i class="bi bi-clipboard"></i></button>
+              </div>
+              <div class="d-grid mb-4">
+                <a :href="whatsappUrl" target="_blank" class="btn btn-success py-2"><i class="bi bi-whatsapp me-2"></i>Compartir en WhatsApp</a>
+              </div>
+              <div>
+                <h5 class="fw-bold mb-4"><i class="bi bi-trophy me-2 text-primary"></i>Recompensas</h5>
+                <div v-if="!data.rewards?.length" class="text-muted small">Sin recompensas configuradas</div>
+                <div class="row g-3">
+                  <div v-for="r in data.rewards" :key="r.id" class="col-md-6">
+                    <div class="card border h-100" :class="r.unlocked ? 'border-success' : 'opacity-75'">
+                      <div class="card-body text-center p-3">
+                        <i class="bi fs-2 mb-2 d-block" :class="r.unlocked ? 'bi-trophy-fill text-success' : 'bi-lock-fill text-muted'"></i>
+                        <span class="badge mb-2" :class="r.unlocked ? 'bg-success' : 'bg-secondary'">{{ r.unlocked ? 'Desbloqueado' : 'Bloqueado' }}</span>
+                        <h6 class="fw-bold small">{{ r.name }}</h6>
+                        <p class="small text-muted mb-1">{{ r.description }}</p>
+                        <small class="text-muted">{{ r.referralsRequired }} referidos</small>
+                        <div v-if="r.unlocked && r.link" class="mt-2">
+                          <a :href="r.link" target="_blank" rel="noopener" class="btn btn-sm btn-primary w-100"><i class="bi bi-box-arrow-up-right me-1"></i>Acceder</a>
+                        </div>
+                        <div v-if="r.unlocked && r.files?.length" class="mt-2">
+                          <a v-for="f in r.files" :key="f.id" :href="f.url" target="_blank" class="btn btn-sm btn-success"><i class="bi bi-download me-1"></i>Descargar</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="row g-4">
-          <div class="col-lg-5">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4">
               <div class="card-body p-4">
                 <h5 class="fw-bold mb-4"><i class="bi bi-graph-up-arrow me-2 text-primary"></i>Tu Progreso</h5>
                 <div class="row g-3 mb-4">
@@ -68,47 +97,6 @@
                 </div>
                 <div v-else class="text-center mt-3">
                   <span class="badge bg-success fs-6 px-3 py-2"><i class="bi bi-trophy-fill me-1"></i>¡Todos los premios desbloqueados!</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-7">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-              <div class="card-body p-4">
-                <h5 class="fw-bold mb-4"><i class="bi bi-share-fill me-2 text-primary"></i>Comparte tu enlace</h5>
-                <div class="input-group mb-3">
-                  <input :value="referralLink" class="form-control" readonly id="refLink" />
-                  <button class="btn btn-outline-primary" @click="copyLink"><i class="bi bi-clipboard"></i></button>
-                </div>
-                <div class="d-grid gap-2 mb-4">
-                  <a :href="whatsappUrl" target="_blank" class="btn btn-success py-2"><i class="bi bi-whatsapp me-2"></i>Compartir en WhatsApp</a>
-                </div>
-              </div>
-            </div>
-
-            <div class="card border-0 shadow-sm rounded-4 mt-4">
-              <div class="card-body p-4">
-                <h5 class="fw-bold mb-4"><i class="bi bi-trophy me-2 text-primary"></i>Recompensas</h5>
-                <div v-if="!data.rewards?.length" class="text-muted small">Sin recompensas configuradas</div>
-                <div class="row g-3">
-                  <div v-for="r in data.rewards" :key="r.id" class="col-md-6">
-                    <div class="card border h-100" :class="r.unlocked ? 'border-success' : 'opacity-75'">
-                      <div class="card-body text-center p-3">
-                        <i class="bi fs-2 mb-2 d-block" :class="r.unlocked ? 'bi-trophy-fill text-success' : 'bi-lock-fill text-muted'"></i>
-                        <span class="badge mb-2" :class="r.unlocked ? 'bg-success' : 'bg-secondary'">{{ r.unlocked ? 'Desbloqueado' : 'Bloqueado' }}</span>
-                        <h6 class="fw-bold small">{{ r.name }}</h6>
-                        <p class="small text-muted mb-1">{{ r.description }}</p>
-                        <small class="text-muted">{{ r.referralsRequired }} referidos</small>
-                        <div v-if="r.unlocked && r.link" class="mt-2">
-                          <a :href="r.link" target="_blank" rel="noopener" class="btn btn-sm btn-primary w-100"><i class="bi bi-box-arrow-up-right me-1"></i>Acceder</a>
-                        </div>
-                        <div v-if="r.unlocked && r.files?.length" class="mt-2">
-                          <a v-for="f in r.files" :key="f.id" :href="f.url" target="_blank" class="btn btn-sm btn-success"><i class="bi bi-download me-1"></i>Descargar</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
