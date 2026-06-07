@@ -79,6 +79,8 @@
                     <span class="small fw-semibold">{{ sec.title || 'Sin título' }}</span>
                   </div>
                   <div class="d-flex gap-1">
+                    <button class="btn btn-sm text-secondary" @click="moveSection(i, -1)" :disabled="i === 0" title="Subir"><i class="bi bi-chevron-up"></i></button>
+                    <button class="btn btn-sm text-secondary" @click="moveSection(i, 1)" :disabled="i === sections.length - 1" title="Bajar"><i class="bi bi-chevron-down"></i></button>
                     <button class="btn btn-sm text-danger" @click="removeSection(i)" title="Eliminar"><i class="bi bi-trash"></i></button>
                   </div>
                 </div>
@@ -395,6 +397,17 @@ const removeSection = async (i) => {
   if (sec.id) try { await landingApi.deleteSection(route.params.id, sec.id) } catch {}
   sections.value.splice(i, 1)
   toast.add('Sección eliminada', 'success')
+}
+
+const moveSection = (i, dir) => {
+  const j = i + dir
+  if (j < 0 || j >= sections.value.length) return
+  const tmp = sections.value[i]
+  sections.value[i] = sections.value[j]
+  sections.value[j] = tmp
+  // Persist new order
+  const order = sections.value.map((s, idx) => ({ id: s.id, order: idx }))
+  landingApi.reorderSections(route.params.id, order)
 }
 
 const resetRewardForm = () => Object.assign(rewardForm, { name: '', referralsRequired: 0, description: '', link: '' })
