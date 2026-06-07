@@ -218,9 +218,7 @@ const handleImageUpload = async (event) => {
   if (!file) return
   try {
     const data = await uploadApi.upload(file)
-    const filename = data.data?.filename || data.filename
-    const base = (import.meta.env.VITE_API_URL || '').replace(/\/api$/, '')
-    editor.value?.chain().focus().setImage({ src: `${base}/uploads/${filename}` }).run()
+    editor.value?.chain().focus().setImage({ src: data.data?.url || data.url }).run()
   } catch (e) {
     console.error('Upload error:', e)
   }

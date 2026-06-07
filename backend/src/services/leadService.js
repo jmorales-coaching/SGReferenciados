@@ -89,7 +89,7 @@ class LeadService {
         files: r.files?.map((f) => ({
           id: f.id,
           originalName: f.originalName,
-          url: `/uploads/${f.filename}`,
+          url: f.url || `/uploads/${f.filename}`,
         })) || [],
       })),
       nextReward: next ? { name: next.name, referralsRequired: next.referralsRequired, remaining: next.referralsRequired - lead.referralCount } : null,

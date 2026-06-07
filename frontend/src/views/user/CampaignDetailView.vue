@@ -327,9 +327,7 @@ const handleImageUpload = async (event, i) => {
   if (!file) return
   try {
     const data = await uploadApi.upload(file)
-    const filename = data.data?.filename || data.filename
-    const base = (import.meta.env.VITE_API_URL || '').replace(/\/api$/, '')
-    sections.value[i].content.imageUrl = `${base}/uploads/${filename}`
+    sections.value[i].content.imageUrl = data.data?.url || data.url
     await saveSection(sections.value[i])
     toast.add('Imagen subida', 'success')
   } catch { toast.add('Error al subir imagen', 'danger') }
@@ -343,9 +341,7 @@ const handleBgUpload = async (event, i) => {
   if (!file) return
   try {
     const data = await uploadApi.upload(file)
-    const filename = data.data?.filename || data.filename
-    const base = (import.meta.env.VITE_API_URL || '').replace(/\/api$/, '')
-    sections.value[i].content.bgImage = `${base}/uploads/${filename}`
+    sections.value[i].content.bgImage = data.data?.url || data.url
     await saveSection(sections.value[i])
     toast.add('Fondo subido', 'success')
   } catch { toast.add('Error al subir fondo', 'danger') }
@@ -359,9 +355,7 @@ const handleFormIconUpload = async (event) => {
   if (!file) return
   try {
     const data = await uploadApi.upload(file)
-    const filename = data.data?.filename || data.filename
-    const base = (import.meta.env.VITE_API_URL || '').replace(/\/api$/, '')
-    page.formIcon = `${base}/uploads/${filename}`
+    page.formIcon = data.data?.url || data.url
     await savePage()
     toast.add('Ícono subido', 'success')
   } catch { toast.add('Error al subir ícono', 'danger') }

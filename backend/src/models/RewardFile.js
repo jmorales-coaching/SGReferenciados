@@ -8,7 +8,8 @@ const RewardFile = sequelize.define('RewardFile', {
   originalName: { type: DataTypes.STRING(255), allowNull: false },
   mimeType: { type: DataTypes.STRING(100), allowNull: false },
   size: { type: DataTypes.INTEGER, allowNull: false },
-  path: { type: DataTypes.STRING(500), allowNull: false },
+  path: { type: DataTypes.STRING(500), allowNull: true },
+  url: { type: DataTypes.STRING(500), allowNull: true },
 }, {
   tableName: 'reward_files',
   indexes: [

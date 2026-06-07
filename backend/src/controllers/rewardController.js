@@ -23,7 +23,8 @@ const attachFile = asyncHandler(async (req, res) => {
     originalName: req.file.originalname,
     mimeType: req.file.mimetype,
     size: req.file.size,
-    path: req.file.path,
+    path: null,
+    url: req.file.path,
   });
   return ApiResponse.created(res, file, 'File attached');
 });

@@ -8,7 +8,8 @@ const Upload = sequelize.define('Upload', {
   originalName: { type: DataTypes.STRING(255), allowNull: false },
   mimeType: { type: DataTypes.STRING(100), allowNull: false },
   size: { type: DataTypes.INTEGER, allowNull: false },
-  path: { type: DataTypes.STRING(500), allowNull: false },
+  path: { type: DataTypes.STRING(500), allowNull: true },
+  url: { type: DataTypes.STRING(500), allowNull: true },
   type: { type: DataTypes.ENUM('image', 'pdf', 'other'), allowNull: false },
 }, {
   tableName: 'uploads',
