@@ -7,13 +7,18 @@ class EmailService {
   }
 
   async sendWelcomeEmail({ lead, campaign, owner, landingPage, baseUrl }) {
-    if (!this.resend) return;
+    if (!this.resend) {
+      console.warn('Resend not configured — skipping welcome email');
+      return;
+    }
     const panelLink = `${baseUrl}/referral/${lead.uuid}`;
     const referralLink = `${baseUrl}/c/${campaign.slug}?ref=${lead.referralCode}`;
-    const creatorName = owner.company || owner.fullName || 'SG Referidos';
+    const creatorName = owner?.company || owner?.fullName || 'SG Referidos';
+    const from = process.env.RESEND_FROM || 'SG Referidos <onboarding@sgreferidos.com>';
 
-    let subject = landingPage.emailSubject || '🎁 ¡{NOMBRE} ya puedes descargar tu PDF!';
-    let body = landingPage.emailBody || this._defaultBody();
+    const lp = landingPage || {};
+    let subject = lp.emailSubject || '🎁 ¡{NOMBRE} ya puedes descargar tu PDF!';
+    let body = lp.emailBody || this._defaultBody();
 
     const replacements = {
       '{NOMBRE}': lead.fullName,
@@ -31,23 +36,23 @@ class EmailService {
 
     try {
       const { error } = await this.resend.emails.send({
-        from: 'SG Referidos <onboarding@sgreferidos.com>',
+        from,
         to: lead.email,
         subject,
         html: htmlBody,
       });
-      if (error) console.error('Resend error:', error);
+      if (error) console.error('Resend send error:', error);
     } catch (e) {
       console.error('Failed to send welcome email:', e.message);
     }
   }
 
   _toHtml(text) {
-    const lines = text.split('\n').filter(Boolean);
+    const lines = text.split('\n');
     const paragraphs = lines.map((l) => {
       let line = l.trim();
+      if (!line) return '<br />';
       line = line.replace(/https?:\/\/[^\s<]+/g, (url) => `<a href="${url}" target="_blank" style="color:#0d6efd;text-decoration:underline">${url}</a>`);
-      if (!line) return '';
       return `<p style="margin:0 0 12px 0;font-size:15px;line-height:1.6;color:#333">${line}</p>`;
     }).join('');
     return `<div style="font-family:'Segoe UI',Arial,sans-serif;max-width:600px;margin:0 auto;padding:30px 20px;background:#fff">
