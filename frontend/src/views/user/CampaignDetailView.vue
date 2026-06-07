@@ -31,10 +31,16 @@
               <div class="mb-3">
                 <label class="form-label small">Título del formulario</label>
                 <input v-model="page.formTitle" class="form-control" placeholder="Participa y Gana" @change="savePage" />
+                <div class="d-flex gap-2 mt-1">
+                  <label class="d-flex align-items-center gap-1 small text-muted">Tamaño:<select v-model="page.formTitleSize" class="form-select form-select-sm" style="width:95px" @change="savePage"><option value="">Default</option><option value="h4">h4</option><option value="h5">h5</option><option value="16px">16px</option><option value="18px">18px</option><option value="20px">20px</option><option value="24px">24px</option><option value="28px">28px</option></select></label>
+                </div>
               </div>
               <div class="mb-3">
                 <label class="form-label small">Subtítulo del formulario</label>
                 <input v-model="page.formSubtitle" class="form-control" placeholder="Regístrate, comparte tu enlace y desbloquea premios" @change="savePage" />
+                <div class="d-flex gap-2 mt-1">
+                  <label class="d-flex align-items-center gap-1 small text-muted">Tamaño:<select v-model="page.formSubtitleSize" class="form-select form-select-sm" style="width:95px" @change="savePage"><option value="">Default</option><option value="12px">12px</option><option value="14px">14px</option><option value="16px">16px</option><option value="18px">18px</option><option value="20px">20px</option></select></label>
+                </div>
               </div>
               <div class="mb-3">
                 <label class="form-label small">Ícono del formulario</label>
@@ -245,7 +251,7 @@ const campaigns = useCampaignStore()
 const toast = useToastStore()
 
 const sections = ref([])
-const page = reactive({ seoTitle: '', formTitle: 'Participa y Gana', formSubtitle: 'Regístrate, comparte tu enlace y desbloquea premios', formIcon: '', primaryColor: '#0d6efd', secondaryColor: '#6610f2', fontFamily: 'Inter' })
+const page = reactive({ seoTitle: '', formTitle: 'Participa y Gana', formSubtitle: 'Regístrate, comparte tu enlace y desbloquea premios', formTitleSize: '', formSubtitleSize: '', formIcon: '', primaryColor: '#0d6efd', secondaryColor: '#6610f2', fontFamily: 'Inter' })
 const showRewardModal = ref(false)
 const editingReward = ref(null)
 const rewardForm = reactive({ name: '', referralsRequired: 0, description: '', link: '' })
