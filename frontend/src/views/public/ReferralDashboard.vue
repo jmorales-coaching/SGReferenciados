@@ -33,7 +33,14 @@
               <div class="d-grid mb-4">
                 <a :href="whatsappUrl" target="_blank" class="btn btn-success py-2"><i class="bi bi-whatsapp me-2"></i>Compartir en WhatsApp</a>
               </div>
-              <div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row justify-content-center mb-4">
+          <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4">
+              <div class="card-body p-4">
                 <h5 class="fw-bold mb-4"><i class="bi bi-trophy me-2 text-primary"></i>Recompensas</h5>
                 <div v-if="!data.rewards?.length" class="text-muted small">Sin recompensas configuradas</div>
                 <div class="row g-3">
