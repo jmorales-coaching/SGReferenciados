@@ -112,11 +112,17 @@
                 <div v-if="sec.type === 'benefits'">
                   <hr class="my-2" />
                   <p class="small fw-semibold mb-1">Items de beneficios</p>
-                  <div v-for="(item, idx) in sec.content.items || []" :key="idx" class="d-flex gap-1 mb-1">
-                    <input v-model="item.icon" class="form-control form-control-sm" style="width:90px" placeholder="Icono" @change="saveSection(sec)" />
-                    <input v-model="item.title" class="form-control form-control-sm" placeholder="Título" @change="saveSection(sec)" />
-                    <input v-model="item.text" class="form-control form-control-sm" placeholder="Texto" @change="saveSection(sec)" />
-                    <button class="btn btn-sm btn-outline-danger" @click="removeBenefitItem(sec, idx)"><i class="bi bi-x"></i></button>
+                  <div v-for="(item, idx) in sec.content.items || []" :key="idx" class="border rounded p-2 mb-1">
+                    <div class="d-flex gap-1 mb-1">
+                      <input v-model="item.icon" class="form-control form-control-sm" style="width:90px" placeholder="Icono" @change="saveSection(sec)" />
+                      <input v-model="item.title" class="form-control form-control-sm" placeholder="Título" @change="saveSection(sec)" />
+                      <input v-model="item.text" class="form-control form-control-sm" placeholder="Texto" @change="saveSection(sec)" />
+                      <button class="btn btn-sm btn-outline-danger" @click="removeBenefitItem(sec, idx)"><i class="bi bi-x"></i></button>
+                    </div>
+                    <div class="d-flex gap-2 small">
+                      <label class="d-flex align-items-center gap-1"><span class="text-muted">Título:</span><select v-model="item.titleSize" class="form-select form-select-sm" style="width:80px" @change="saveSection(sec)"><option value="">Default</option><option value="h4">h4</option><option value="h5">h5</option><option value="h6">h6</option><option value="16px">16px</option><option value="18px">18px</option><option value="20px">20px</option><option value="24px">24px</option></select></label>
+                      <label class="d-flex align-items-center gap-1"><span class="text-muted">Texto:</span><select v-model="item.textSize" class="form-select form-select-sm" style="width:80px" @change="saveSection(sec)"><option value="">Default</option><option value="12px">12px</option><option value="14px">14px</option><option value="16px">16px</option><option value="18px">18px</option></select></label>
+                    </div>
                   </div>
                   <button class="btn btn-sm btn-outline-primary mt-1" @click="addBenefitItem(sec)"><i class="bi bi-plus"></i> Item</button>
                 </div>
@@ -293,7 +299,7 @@ const duplicateCampaign = async () => {
 const addSection = (type = 'custom') => {
   const defaults = {
     hero: { text: '' },
-    benefits: { items: [{ icon: 'bi-gift', title: '', text: '' }] },
+    benefits: { items: [{ icon: 'bi-gift', title: '', text: '', titleSize: '', textSize: '' }] },
     testimonials: { items: [{ name: '', role: '', text: '' }] },
     faq: { items: [{ question: '', answer: '' }] },
     custom: { text: '' },
@@ -304,7 +310,7 @@ const addSection = (type = 'custom') => {
 
 const addBenefitItem = (sec) => {
   if (!sec.content.items) sec.content.items = []
-  sec.content.items.push({ icon: 'bi-star', title: '', text: '' })
+  sec.content.items.push({ icon: 'bi-star', title: '', text: '', titleSize: '', textSize: '' })
 }
 const removeBenefitItem = (sec, idx) => { sec.content.items.splice(idx, 1); saveSection(sec) }
 

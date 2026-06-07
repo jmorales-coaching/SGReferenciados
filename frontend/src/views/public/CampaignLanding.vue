@@ -63,13 +63,13 @@
         <div class="container">
           <h2 class="text-center fw-bold mb-5">{{ benefitsSection.title }}</h2>
           <div class="row g-4">
-            <div v-for="(item, i) in benefitsSection.content.items" :key="i" class="col-md-4">
-              <div class="card border-0 shadow-sm h-100 text-center p-4">
-                <i :class="item.icon || 'bi bi-star'" class="fs-1 mb-3" :style="{ color: campaign.landingPage.primaryColor }"></i>
-                <h5 class="fw-bold">{{ item.title }}</h5>
-                <p class="small text-muted mb-0">{{ item.text }}</p>
+              <div v-for="(item, i) in benefitsSection.content.items" :key="i" class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 text-center p-4">
+                  <i :class="item.icon || 'bi bi-star'" class="fs-1 mb-3" :style="{ color: campaign.landingPage.primaryColor }"></i>
+                  <div :style="item.titleSize ? { fontSize: item.titleSize, fontWeight: 700 } : {}" :class="`fw-bold mb-2 ${item.titleSize ? '' : 'h5'}`">{{ item.title }}</div>
+                  <div class="text-muted mb-0" :style="{ fontSize: item.textSize || '' }">{{ item.text }}</div>
+                </div>
               </div>
-            </div>
           </div>
         </div>
       </section>
