@@ -174,7 +174,7 @@
               </div>
               <div class="mb-2">
                 <label class="form-label small">Cuerpo</label>
-                <textarea v-model="page.emailBody" class="form-control" rows="10" placeholder="Escribe el cuerpo del email..." @change="savePage"></textarea>
+                <RichTextEditor v-model="page.emailBody" height="300px" placeholder="Escribe el cuerpo del email..." @update:model-value="savePage" />
               </div>
               <div>
                 <small class="text-muted d-block">Variables disponibles:</small>

@@ -32,6 +32,7 @@
       <div class="vr mx-1"></div>
       <button class="btn btn-sm btn-light" @click="editor.chain().focus().toggleBlockquote().run()" :class="{ 'active': editor.isActive('blockquote') }" title="Cita"><i class="bi bi-quote"></i></button>
       <button class="btn btn-sm btn-light" @click="openLinkModal" :class="{ 'active': editor.isActive('link') }" title="Enlace"><i class="bi bi-link-45deg"></i></button>
+      <button class="btn btn-sm btn-success" @click="openButtonModal" title="Botón"><i class="bi bi-cursor"></i></button>
       <button class="btn btn-sm btn-light" @click.stop="showColorModal = !showColorModal" title="Color del texto"><i class="bi bi-palette"></i></button>
       <div class="vr mx-1"></div>
       <button v-if="isImageSelected" class="btn btn-sm btn-light active" title="Imagen seleccionada"><i class="bi bi-image"></i></button>
@@ -66,6 +67,19 @@
         <div class="d-flex gap-2 justify-content-end">
           <button class="btn btn-light btn-sm" @click="showLinkModal = false">Cancelar</button>
           <button class="btn btn-primary btn-sm" @click="insertLink">Insertar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Button Modal -->
+    <div v-if="showButtonModal" class="modal-backdrop" @click.self="showButtonModal = false">
+      <div class="modal-card p-4">
+        <h6 class="fw-bold mb-3">Insertar botón</h6>
+        <input v-model="buttonText" class="form-control mb-2" placeholder="Texto del botón" />
+        <input v-model="buttonUrl" class="form-control mb-3" placeholder="https://..." />
+        <div class="d-flex gap-2 justify-content-end">
+          <button class="btn btn-light btn-sm" @click="showButtonModal = false">Cancelar</button>
+          <button class="btn btn-primary btn-sm" @click="insertButton">Insertar</button>
         </div>
       </div>
     </div>
@@ -155,9 +169,12 @@ const emit = defineEmits(['update:modelValue'])
 const fileInput = ref(null)
 const showYoutubeModal = ref(false)
 const showLinkModal = ref(false)
+const showButtonModal = ref(false)
 const showColorModal = ref(false)
 const youtubeUrl = ref('')
 const linkUrl = ref('')
+const buttonText = ref('')
+const buttonUrl = ref('')
 const customColor = ref('#ff0000')
 const presetColors = ['#ff0000', '#ff6600', '#ffcc00', '#00cc00', '#0066ff', '#6600cc', '#cc0066', '#000000', '#666666', '#999999', '#cccccc', '#ffffff']
 
@@ -247,6 +264,19 @@ const insertLink = () => {
     editor.value?.chain().focus().unsetLink().run()
   }
   showLinkModal.value = false
+}
+
+const openButtonModal = () => {
+  buttonText.value = ''
+  buttonUrl.value = ''
+  showButtonModal.value = true
+}
+
+const insertButton = () => {
+  if (buttonText.value && buttonUrl.value) {
+    editor.value?.chain().focus().insertContent(`<a href="${buttonUrl.value}" class="email-btn" style="display:inline-block;padding:12px 28px;background-color:#0d6efd;color:#ffffff;text-decoration:none;border-radius:6px;font-size:16px;font-weight:600">${buttonText.value}</a>`).run()
+  }
+  showButtonModal.value = false
 }
 
 const setFontSize = (size) => {

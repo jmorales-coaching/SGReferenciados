@@ -18,7 +18,7 @@ class EmailService {
 
     const lp = landingPage || {};
     let subject = lp.emailSubject || '🎁 ¡{NOMBRE} ya puedes descargar tu PDF!';
-    let body = lp.emailBody || this._defaultBody();
+    let bodyHtml = lp.emailBody || '';
 
     const replacements = {
       '{NOMBRE}': lead.fullName,
@@ -29,10 +29,15 @@ class EmailService {
 
     for (const [key, val] of Object.entries(replacements)) {
       subject = subject.split(key).join(val);
-      body = body.split(key).join(val);
+      bodyHtml = bodyHtml.split(key).join(val);
     }
 
-    const htmlBody = this._toHtml(body);
+    // If no custom template, use default plain-text fallback
+    if (!lp.emailBody) {
+      bodyHtml = this._defaultHtml(referralLink, panelLink, lead.fullName, creatorName);
+    }
+
+    const htmlBody = this._wrapHtml(bodyHtml);
 
     try {
       const { error } = await this.resend.emails.send({
@@ -47,35 +52,34 @@ class EmailService {
     }
   }
 
-  _toHtml(text) {
-    const lines = text.split('\n');
-    const paragraphs = lines.map((l) => {
-      let line = l.trim();
-      if (!line) return '<br />';
-      line = line.replace(/https?:\/\/[^\s<]+/g, (url) => `<a href="${url}" target="_blank" style="color:#0d6efd;text-decoration:underline">${url}</a>`);
-      return `<p style="margin:0 0 12px 0;font-size:15px;line-height:1.6;color:#333">${line}</p>`;
-    }).join('');
-    return `<div style="font-family:'Segoe UI',Arial,sans-serif;max-width:600px;margin:0 auto;padding:30px 20px;background:#fff">
-      <div style="text-align:center;margin-bottom:24px">
-        <img src="https://sgreferidos.com/logo.png" alt="SG Referidos" style="max-height:48px" />
-      </div>
-      ${paragraphs}
-      <hr style="border:none;border-top:1px solid #e5e5e5;margin:24px 0" />
-      <p style="font-size:12px;color:#999;text-align:center">SG Referidos — Programa de referidos</p>
-    </div>`;
+  _wrapHtml(bodyContent) {
+    return `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1" /></head>
+<body style="font-family:'Segoe UI',Arial,sans-serif;margin:0;padding:0;background:#f4f4f4">
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="max-width:600px;width:100%;margin:24px auto;background:#ffffff;border-radius:8px">
+    <tr><td style="padding:30px 20px 10px;text-align:center">
+      <img src="https://sgreferidos.com/logo.png" alt="SG Referidos" style="max-height:48px" />
+    </td></tr>
+    <tr><td style="padding:10px 30px 30px">
+      ${bodyContent}
+    </td></tr>
+    <tr><td style="padding:20px 30px;text-align:center;border-top:1px solid #eee">
+      <p style="font-size:12px;color:#999;margin:0">SG Referidos — Programa de referidos</p>
+    </td></tr>
+  </table>
+</body></html>`;
   }
 
-  _defaultBody() {
-    return `Hola, {NOMBRE}:
-
-¡Qué gran alegría tenerte con nosotros!
-Tu cuenta ya está completamente activa.
-
-Copia tu enlace único: {ENLACE_REFERIDO}
-Compártelo con tus amigos y empieza a sumar recompensas.
-
-Un fuerte abrazo,
-El equipo de {CREADOR}`;
+  _defaultHtml(refLink, panelLink, name, creator) {
+    return `<p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;color:#333">Hola, <strong>${name}</strong>:</p>
+<p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;color:#333">¡Qué gran alegría tenerte con nosotros! Tu cuenta ya está completamente activa.</p>
+<p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;color:#333">Copia tu enlace único y compártelo con tus amigos para empezar a sumar recompensas:</p>
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin:24px auto">
+  <tr><td style="border-radius:6px;background:#0d6efd;padding:12px 28px;text-align:center">
+    <a href="${refLink}" target="_blank" style="color:#ffffff;text-decoration:none;font-size:16px;font-weight:600;display:inline-block">🔗 COMPARTIR MI ENLACE Y VER PREMIOS</a>
+  </td></tr>
+</table>
+<p style="margin:24px 0 0 0;font-size:15px;line-height:1.6;color:#333">Un fuerte abrazo,<br />El equipo de <strong>${creator}</strong></p>`;
   }
 }
 
