@@ -26,6 +26,8 @@ app.use(cors({
   origin: (origin, cb) => {
     if (!origin) return cb(null, true);
     if (env.app.corsOrigins.includes(origin)) return cb(null, true);
+    // Allow any Render onrender.com subdomain automatically
+    if (origin.endsWith('.onrender.com')) return cb(null, true);
     cb(null, false);
   },
   credentials: true,
